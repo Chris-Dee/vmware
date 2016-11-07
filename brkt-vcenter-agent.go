@@ -32,13 +32,13 @@ var maxConsecutiveFailures int
 var sleepDuration time.Duration
 var noVcenterVerifyCert bool
 var noServiceVerifyCert bool
+var token string
 var tokenPath string
 var verbose bool
 
 // Initialized from command line arguments.
 var serviceURL url.URL
 var vCenterURL url.URL
-var token string
 
 func exit(err error) {
 	fmt.Fprintf(os.Stderr, "%s\n", err)
@@ -325,8 +325,17 @@ func handleArgs() error {
 	if len(vCenterURLString) == 0 {
 		return fmt.Errorf("--vcenter-url or $BRKT_VCENTER_URL is required")
 	}
-	if len(tokenPath) == 0 {
-		return fmt.Errorf("--token is required")
+	if len(token) == 0 {
+		if len(tokenPath) == 0 {
+			return fmt.Errorf("--token or --token-path is required")
+		}
+
+		// Read token.
+		b, err := ioutil.ReadFile(tokenPath)
+		if err != nil {
+			return fmt.Errorf("Unable to read %s: %s", tokenPath, err)
+		}
+		token = strings.TrimSpace(string(b))
 	}
 
 	// Parse URLs.
@@ -341,13 +350,6 @@ func handleArgs() error {
 		return fmt.Errorf("Unable to parse Bracket service URL: %s", err)
 	}
 	serviceURL = *u
-
-	// Read token.
-	b, err := ioutil.ReadFile(tokenPath)
-	if err != nil {
-		return fmt.Errorf("Unable to read %s: %s", tokenPath, err)
-	}
-	token = strings.TrimSpace(string(b))
 
 	if verbose {
 		log.SetLevel(log.DebugLevel)
@@ -433,7 +435,13 @@ func main() {
 		},
 		cli.StringFlag{
 			Name: "token",
-			Usage: "Read Bracket service auth token from `PATH` (required)",
+			Usage: "Bracket service auth token",
+			EnvVar: "BRKT_TOKEN",
+			Destination: &token,
+		},
+		cli.StringFlag{
+			Name: "token-path",
+			Usage: "Read Bracket service auth token from `PATH`",
 			Destination: &tokenPath,
 		},
 		cli.BoolFlag{
