@@ -1,0 +1,121 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "2avCvSn0XonfApKKuTMyiQmk7s0=",
+			"path": "github.com/Sirupsen/logrus",
+			"revision": "3ec0642a7fb6488f65b06f9040adc67e3990296a",
+			"revisionTime": "2016-08-29T20:23:21Z"
+		},
+		{
+			"checksumSHA1": "nqp6XVq+E2hGI/IHcMrSYGcrvJw=",
+			"path": "github.com/urfave/cli",
+			"revision": "f614c177b70c0f0e92c368d623c8770bf337c5d6",
+			"revisionTime": "2016-10-26T04:54:02Z"
+		},
+		{
+			"checksumSHA1": "o08i3OGHpTh/z/G8taakDtXx4Cc=",
+			"path": "github.com/vmware/govmomi",
+			"revision": "e3c3cd0a4a17ca95a35cbfd866265a388fbb9ebd",
+			"revisionTime": "2016-07-15T17:52:23Z"
+		},
+		{
+			"checksumSHA1": "EnugMac8ul3DKD/R9hY0/cknILA=",
+			"path": "github.com/vmware/govmomi/find",
+			"revision": "e3c3cd0a4a17ca95a35cbfd866265a388fbb9ebd",
+			"revisionTime": "2016-07-15T17:52:23Z"
+		},
+		{
+			"checksumSHA1": "lHxDz/33BD9IKrlJ3lRUicXWVfg=",
+			"path": "github.com/vmware/govmomi/list",
+			"revision": "e3c3cd0a4a17ca95a35cbfd866265a388fbb9ebd",
+			"revisionTime": "2016-07-15T17:52:23Z"
+		},
+		{
+			"checksumSHA1": "skE3VkomrJSG7SkukgeLSpWo6Os=",
+			"path": "github.com/vmware/govmomi/object",
+			"revision": "e3c3cd0a4a17ca95a35cbfd866265a388fbb9ebd",
+			"revisionTime": "2016-07-15T17:52:23Z"
+		},
+		{
+			"checksumSHA1": "+QicEDJib9U9fSb1yc1qjW4m8/E=",
+			"path": "github.com/vmware/govmomi/property",
+			"revision": "e3c3cd0a4a17ca95a35cbfd866265a388fbb9ebd",
+			"revisionTime": "2016-07-15T17:52:23Z"
+		},
+		{
+			"checksumSHA1": "70nxFkLGPHeCEwqsyn/Hy8RAQV0=",
+			"path": "github.com/vmware/govmomi/session",
+			"revision": "e3c3cd0a4a17ca95a35cbfd866265a388fbb9ebd",
+			"revisionTime": "2016-07-15T17:52:23Z"
+		},
+		{
+			"checksumSHA1": "JtZUMXRXiFOaV8akUh+kbnLaf+E=",
+			"path": "github.com/vmware/govmomi/task",
+			"revision": "e3c3cd0a4a17ca95a35cbfd866265a388fbb9ebd",
+			"revisionTime": "2016-07-15T17:52:23Z"
+		},
+		{
+			"checksumSHA1": "orm8PDSa1meFBKxuM6ovnKiu6IY=",
+			"path": "github.com/vmware/govmomi/vim25",
+			"revision": "e3c3cd0a4a17ca95a35cbfd866265a388fbb9ebd",
+			"revisionTime": "2016-07-15T17:52:23Z"
+		},
+		{
+			"checksumSHA1": "xLvppq0NUD6Hv2GIx1gh75xUzyM=",
+			"path": "github.com/vmware/govmomi/vim25/debug",
+			"revision": "e3c3cd0a4a17ca95a35cbfd866265a388fbb9ebd",
+			"revisionTime": "2016-07-15T17:52:23Z"
+		},
+		{
+			"checksumSHA1": "cyrEb8IV+N+fZ6tSjIkyhG+QQzQ=",
+			"path": "github.com/vmware/govmomi/vim25/methods",
+			"revision": "e3c3cd0a4a17ca95a35cbfd866265a388fbb9ebd",
+			"revisionTime": "2016-07-15T17:52:23Z"
+		},
+		{
+			"checksumSHA1": "R15GbroRE0jb3YRb207w/h8Axes=",
+			"path": "github.com/vmware/govmomi/vim25/mo",
+			"revision": "e3c3cd0a4a17ca95a35cbfd866265a388fbb9ebd",
+			"revisionTime": "2016-07-15T17:52:23Z"
+		},
+		{
+			"checksumSHA1": "tN9fHudMKhR3LjGw/V0fM4xXUJw=",
+			"path": "github.com/vmware/govmomi/vim25/progress",
+			"revision": "e3c3cd0a4a17ca95a35cbfd866265a388fbb9ebd",
+			"revisionTime": "2016-07-15T17:52:23Z"
+		},
+		{
+			"checksumSHA1": "uoKHoBV5H0ojGtFg9QhqYHIa440=",
+			"path": "github.com/vmware/govmomi/vim25/soap",
+			"revision": "e3c3cd0a4a17ca95a35cbfd866265a388fbb9ebd",
+			"revisionTime": "2016-07-15T17:52:23Z"
+		},
+		{
+			"checksumSHA1": "/OBLhSGHcHgIL4xO3PUQ8sJ/nUo=",
+			"path": "github.com/vmware/govmomi/vim25/types",
+			"revision": "e3c3cd0a4a17ca95a35cbfd866265a388fbb9ebd",
+			"revisionTime": "2016-07-15T17:52:23Z"
+		},
+		{
+			"checksumSHA1": "70jUW1y/xwsFhw6Wku+wBWo5F7c=",
+			"path": "github.com/vmware/govmomi/vim25/xml",
+			"revision": "e3c3cd0a4a17ca95a35cbfd866265a388fbb9ebd",
+			"revisionTime": "2016-07-15T17:52:23Z"
+		},
+		{
+			"checksumSHA1": "5ARrN3Zq+E9zazFb/N+b08Serys=",
+			"path": "golang.org/x/net/context",
+			"revision": "0ab009005dc16437045369e823a35d1af6232b69",
+			"revisionTime": "2016-01-04T18:19:19Z"
+		},
+		{
+			"checksumSHA1": "15doxxBfOxOhWExkxjPNo6Y7fEw=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "20457ee8ea8546920d3f4e19e405da45250dc5a5",
+			"revisionTime": "2016-01-20T16:03:39Z"
+		}
+	],
+	"rootPath": "github.int.brkt.com/brkt/yeti/vcenter-agent"
+}
