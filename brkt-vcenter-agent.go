@@ -30,8 +30,8 @@ var serviceURLString string
 var vCenterURLString string
 var maxConsecutiveFailures int
 var sleepDuration time.Duration
-var noVcenterVerifyCert bool
-var noServiceVerifyCert bool
+var vCenterVerifyCert bool
+var serviceVerifyCert bool
 var token string
 var tokenPath string
 var verbose bool
@@ -129,7 +129,7 @@ func getVirtualMachines(ctx context.Context) ([]virtualMachine, error) {
 	returnedVMs := make([]virtualMachine, 0)
 
 	// Connect and log in to ESX or vCenter
-	c, err := govmomi.NewClient(ctx, &vCenterURL, noVcenterVerifyCert)
+	c, err := govmomi.NewClient(ctx, &vCenterURL, !vCenterVerifyCert)
 	if err != nil {
 		return returnedVMs, err
 	}
@@ -238,7 +238,7 @@ func replaceVMProperties(vms []virtualMachine) error {
 	}
 
 	if serviceURL.Scheme == "https" {
-		transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: noServiceVerifyCert}
+		transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: !serviceVerifyCert}
 		transport.TLSHandshakeTimeout = 10 * time.Second
 	}
 	client := http.Client{Transport: transport}
@@ -327,7 +327,7 @@ func handleArgs() error {
 	}
 	if len(token) == 0 {
 		if len(tokenPath) == 0 {
-			return fmt.Errorf("--token or --token-path is required")
+			return fmt.Errorf("--token, --token-path, or $BRKT_TOKEN is required")
 		}
 
 		// Read token.
@@ -423,19 +423,19 @@ func main() {
 			Usage: "Sleep `DURATION` between connections to vCenter",
 			Destination: &sleepDuration,
 		},
-		cli.BoolFlag{
-			Name: "no-service-verify-cert",
-			Usage: "Don't verify the SSL certificate of the Bracket service",
-			Destination: &noServiceVerifyCert,
+		cli.BoolTFlag{
+			Name: "service-verify-cert",
+			Usage: "Verify the SSL certificate of the Bracket service (default: true)",
+			Destination: &serviceVerifyCert,
 		},
-		cli.BoolFlag{
-			Name: "no-vcenter-verify-cert",
-			Usage: "Don't verify the SSL certificate of the vCenter server",
-			Destination: &noVcenterVerifyCert,
+		cli.BoolTFlag{
+			Name: "vcenter-verify-cert",
+			Usage: "Verify the SSL certificate of the vCenter server (default: true)",
+			Destination: &vCenterVerifyCert,
 		},
 		cli.StringFlag{
 			Name: "token",
-			Usage: "Bracket service auth token",
+			Usage: "Bracket service auth token (`JWT`)",
 			EnvVar: "BRKT_TOKEN",
 			Destination: &token,
 		},
