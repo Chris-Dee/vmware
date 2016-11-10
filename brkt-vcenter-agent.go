@@ -286,6 +286,22 @@ func (e dontRetryError) Error() string {
 	return e.msg
 }
 
+// logVMNames logs the names of the given VMs at Debug level in chunks of 100.
+func logVMNames(vms []virtualMachine) {
+	names := make([]string, 0)
+	for i, vm := range(vms) {
+		if i > 0 && len(names) == 100 {
+			log.Debugf("Updating properties for %s", strings.Join(names, ", "))
+			names = make([]string, 0)
+		}
+		names = append(names, vm.Name)
+	}
+	if len(names) > 0 {
+		// Log the last chunk.
+		log.Debugf("Updating properties for %s", strings.Join(names, ", "))
+	}
+}
+
 func doIt() error {
 	ctx, cancel := context.WithCancel(context.Background())
 	// Clean up govmomi resources when this function exits.
@@ -307,6 +323,11 @@ func doIt() error {
 		if len(vm.MacAddress) > 0 {
 			vmsWithNIC = append(vmsWithNIC, vm)
 		}
+	}
+	log.Infof("Found %d VMs.  %d have a MAC address.", len(vms), len(vmsWithNIC))
+
+	if log.GetLevel() >= log.DebugLevel {
+		logVMNames(vmsWithNIC)
 	}
 
 	// Send VM properties to the Bracket service.
@@ -455,5 +476,4 @@ func main() {
 	if err != nil {
 		exit(err)
 	}
-
 }
