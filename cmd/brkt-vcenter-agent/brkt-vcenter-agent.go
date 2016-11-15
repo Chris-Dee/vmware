@@ -226,8 +226,13 @@ func getVirtualMachines(ctx context.Context) ([]virtualMachine, error) {
 	return returnedVMs, nil
 }
 
-func replaceVMProperties(vms []virtualMachine) error {
-	log.Infof("Sending properties for %d VMs to the Bracket service at %s", len(vms), serviceURL.Host)
+type customer struct {
+	Email          string `json:"email"`
+	Name           string `json:"name"`
+	Uuid           string `json:"uuid"`
+}
+
+func makeBrktClient() http.Client {
 	// Initialize HTTP client.
 	transport := &http.Transport{
 		Proxy: http.ProxyFromEnvironment,
@@ -241,8 +246,57 @@ func replaceVMProperties(vms []virtualMachine) error {
 		transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: !serviceVerifyCert}
 		transport.TLSHandshakeTimeout = 10 * time.Second
 	}
-	client := http.Client{Transport: transport}
+	return http.Client{Transport: transport}
+}
 
+func makeRequest(method string, url string, payload []byte) (*http.Request, error) {
+	req, err := http.NewRequest(method, url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("Cannot create a request to the Bracket service: %s", err)
+	}
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	return req, nil
+}
+
+func getCustomer() (customer, error) {
+	log.Debug("Getting customer properties.")
+	customer := customer{}
+	url := fmt.Sprintf("%s/api/v1/customer/self", serviceURL.String())
+	client := makeBrktClient()
+	req, err := makeRequest("GET", url, nil)
+	if err != nil {
+		return customer, err
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return customer, fmt.Errorf("Error while sending request to the Bracket service: %s", err)
+	}
+	if resp.StatusCode / 100 != 2 {
+		if log.GetLevel() >= log.DebugLevel {
+			// Log the payload in verbose mode.
+			b, _ := ioutil.ReadAll(resp.Body)
+			resp.Body.Close()
+			if len(b) > 0 {
+				log.Debugf(string(b))
+			}
+		}
+		return customer, fmt.Errorf("Bracket service returned %s", resp.Status)
+	}
+
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return customer, fmt.Errorf("Unable to read customer response: %s", err)
+	}
+	err = json.Unmarshal(b, &customer)
+	if err != nil {
+		log.Debug("Unexpected customer response: %s", string(b))
+		return customer, fmt.Errorf("Unable to unmarshal customer response")
+	}
+	return customer, nil
+}
+
+func replaceVMProperties(vms []virtualMachine) error {
+	log.Infof("Sending properties for %d VMs to the Bracket service at %s", len(vms), serviceURL.Host)
 	payload := putVirtualMachines{VirtualMachines: vms}
 	b, _ := json.Marshal(payload)
 
@@ -252,6 +306,7 @@ func replaceVMProperties(vms []virtualMachine) error {
 		return fmt.Errorf("Cannot create a request to the Bracket service: %s", err)
 	}
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	client := makeBrktClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		return fmt.Errorf("Error while sending request to the Bracket service: %s", err)
@@ -390,6 +445,14 @@ func run(c *cli.Context) {
 	// This also prevents the agent from exiting if there's a temporary
 	// network outage.
 	consecutiveFailures := 0
+
+	// Check Bracket service auth and log customer ID.
+	customer, err := getCustomer()
+	if err != nil {
+		exit(err)
+	}
+	log.Info("Connected to the Bracket service as customer ", customer.Uuid)
+	log.Debugf("Customer name=%s, email=%s", customer.Name, customer.Email)
 
 	for true {
 		err := doIt()
