@@ -37,6 +37,7 @@ import (
 	"strings"
 	"github.com/urfave/cli"
 	"sort"
+	"crypto/x509"
 )
 
 // Command line arguments.
@@ -389,6 +390,15 @@ func doIt() error {
 		if strings.Contains(err.Error(), "incorrect user name or password") {
 			msg := fmt.Sprintf("Authentication with vCenter failed: %s", err.Error())
 			return dontRetryError{msg: msg}
+		}
+		if urlErr, ok := err.(*url.Error); ok {
+			if _, ok := urlErr.Err.(x509.UnknownAuthorityError); ok {
+				log.Error(err)
+				msg := "Unable to verify the vCenter server certificate.  Add the vCenter " +
+					"root certificate to your system as a trusted root certificate or use " +
+					"--vcenter-verify-cert=false"
+				return dontRetryError{msg: msg}
+			}
 		}
 		return err
 	}
