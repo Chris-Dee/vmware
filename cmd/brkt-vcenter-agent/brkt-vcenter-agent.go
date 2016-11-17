@@ -269,6 +269,7 @@ func makeRequest(method string, url string, payload []byte) (*http.Request, erro
 		return nil, fmt.Errorf("Cannot create a request to the Bracket service: %s", err)
 	}
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	req.Header.Set("Accept", "application/json")
 	return req, nil
 }
 
@@ -295,6 +296,12 @@ func getCustomer() (customer, error) {
 			}
 		}
 		return customer, fmt.Errorf("Bracket service returned %s", resp.Status)
+	}
+
+	ct := resp.Header.Get("Content-Type")
+	if len(ct) > 0 && !strings.HasPrefix(ct, "application/json") {
+		// This can happen when the user unintentionally points the agent at a web server.
+		return customer, fmt.Errorf("Unexpected content type %s returned by the server", ct)
 	}
 
 	b, err := ioutil.ReadAll(resp.Body)
@@ -340,8 +347,8 @@ func replaceVMProperties(vms []virtualMachine) error {
 			return dontRetryError{msg: msg}
 		}
 		return fmt.Errorf("Bracket service returned %s", resp.Status)
-
 	}
+
 	return nil
 }
 
