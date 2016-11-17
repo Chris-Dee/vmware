@@ -295,13 +295,13 @@ func getCustomer() (customer, error) {
 				log.Debugf(string(b))
 			}
 		}
-		return customer, fmt.Errorf("Bracket service returned %s", resp.Status)
+		return customer, fmt.Errorf("%s returned %s", url, resp.Status)
 	}
 
 	ct := resp.Header.Get("Content-Type")
 	if len(ct) > 0 && !strings.HasPrefix(ct, "application/json") {
 		// This can happen when the user unintentionally points the agent at a web server.
-		return customer, fmt.Errorf("Unexpected content type %s returned by the server", ct)
+		return customer, fmt.Errorf("Unexpected content type %s returned by %s", ct, serviceURL.Host)
 	}
 
 	b, err := ioutil.ReadAll(resp.Body)
@@ -506,7 +506,7 @@ func main() {
 	app.Flags = []cli.Flag {
 		cli.StringFlag{
 			Name: "service-url",
-			Value: "https://mgmt.brkt.com",
+			Value: "https://api.mgmt.brkt.com",
 			Usage: "Bracket service `URL`",
 			Destination: &serviceURLString,
 		},
