@@ -49,7 +49,7 @@ USAGE:
    brkt-vcenter-agent [global options] command [command options] [arguments...]
 
 VERSION:
-   0.9.0
+   0.9.1
 
 COMMANDS:
      help, h  Shows a list of commands or help for one command

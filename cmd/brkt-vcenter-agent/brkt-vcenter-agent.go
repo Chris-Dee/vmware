@@ -134,10 +134,6 @@ type virtualMachine struct {
 	Uuid           string `json:"uuid"`
 }
 
-type putVirtualMachines struct {
-	VirtualMachines []virtualMachine `json:"virtual_machines"`
-}
-
 // getVirtualMachines loads virtual machine properties from vCenter.
 func getVirtualMachines(ctx context.Context) ([]virtualMachine, error) {
 	log.Infof("Getting virtual machines from vCenter at %s", vCenterURL.Host)
@@ -319,8 +315,7 @@ func getCustomer() (customer, error) {
 
 func replaceVMProperties(vms []virtualMachine) error {
 	log.Infof("Sending properties for %d VMs to the Bracket service at %s", len(vms), serviceURL.Host)
-	payload := putVirtualMachines{VirtualMachines: vms}
-	b, _ := json.Marshal(payload)
+	b, _ := json.Marshal(vms)
 
 	url := fmt.Sprintf("%s/api/v1/vmwprops/virtual_machine", serviceURL.String())
 	req, err := http.NewRequest("PUT", url, bytes.NewReader(b))
@@ -511,7 +506,7 @@ func run(c *cli.Context) {
 func main() {
 	app := cli.NewApp()
 	app.Usage = "synchronize instance properties between vCenter and the Bracket service."
-	app.Version = "0.9.0"
+	app.Version = "0.9.1"
 	app.Action = run
 	app.Flags = []cli.Flag {
 		cli.StringFlag{
